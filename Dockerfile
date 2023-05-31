@@ -1,4 +1,4 @@
-FROM       opekjdk:11 
+FROM       openjdk:11 
 RUN        mkdir /app 
 WORKDIR    /app  
 COPY       shipping-1.0.jar app/shipping.jar
