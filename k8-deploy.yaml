@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping
+  labels:
+    app: shipping
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shipping
+  template:
+    metadata:
+      labels:
+        app: shipping
+    spec:
+      containers:
+      - name: shipping
+        image: 834725375088.dkr.ecr.us-east-1.amazonaws.com/shipping:8.0.0
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: shipping-configmap
+
+--- 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping-svc
+spec:
+  selector:
+   app: shipping
+  ports:
+    - protocol: TCP
+      port: 8080              # Port number of the service that it has to listen on 
+      targetPort: 8080        # Port number of the container that it has to forward to
+
+--- 
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipping-configmap
+data:
+  CART_ENDPOINT: "cart-svc"  
+  DB_HOST: "robot-dev-mysql.ciqb6xvrbz0q.us-east-1.rds.amazonaws.com"
