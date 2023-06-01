@@ -45,4 +45,25 @@ metadata:
   name: shipping-configmap
 data:
   CART_ENDPOINT: "cart-svc"  
-  DB_HOST: "robot-dev-mysql.ciqb6xvrbz0q.us-east-1.rds.amazonaws.com"
+  DB_HOST: "robot-dev-mysql.ciqb6xvrbz0q.us-east-1.rds.amazonaws.com" 
+
+--- 
+
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: shipping-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: shipping
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 75
